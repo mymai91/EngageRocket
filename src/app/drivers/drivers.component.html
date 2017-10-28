@@ -1,3 +1,62 @@
-<p>
-  drivers works!
-</p>
+<section class="container_report">
+  <div class="container">
+    <h3 class="text-center name_report">Attribute Detail Comparison report</h3>
+
+    <div class="wrap_report">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Location</th>
+            <th *ngFor="let driver of drivers">
+                 {{driver}}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let location of locations">
+            <th>{{location.attribute_detail_value}}</th>
+            <th *ngFor="let score of location.scores">
+                {{score.value}}
+            </th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <figure class="highlight">
+      <pre class="text-center">This is the Location comparison report (Singapore, ThaiLand, VietNam)</pre>
+    </figure>
+  </div>
+</section>
+
+<section class="container_report">
+    <div class="container">
+    <h3 class="text-center name_report">Driver Contribution Report</h3>
+
+    <div *ngFor="let driver of drivers; let i = index">
+
+      <div class="row">
+        <div class="wrap_report" *ngFor="let driverCollection of driverCollections">
+          <h4 class="text-center">{{driver}}</h4>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th colspan="2">{{driverCollection.attribute}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{driverCollection.attribute_value}}
+              <tr *ngFor="let item of driverCollection.attribute_values">
+                <th>{{item.attribute_detail_value}}</th>
+                <th>{{item.scores[i].value}}</th>
+              </tr>
+            </tbody>
+          </table>
+          <figure class="highlight">
+            <pre class="text-center">Report base on {{driverCollection.attribute}}</pre>
+          </figure>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
