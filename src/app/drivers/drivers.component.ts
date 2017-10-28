@@ -47,7 +47,17 @@ export class DriversComponent implements OnInit {
   public drivers_arr: Observable<any[]>;
   public fbDriverLocations: Observable<any[]>[] = [];
   constructor(public http: Http, public db: AngularFireDatabase) {
-    
+    this.getDriverCollections().subscribe(result => {
+      this.driverCollections = result;
+      result.forEach((item, index) => {
+        if (item.attribute.toLowerCase() === "location") {
+            this.locations = <Location[]> result[index].attribute_values;
+            this.drivers = this.getDrivers(this.locations[0].scores);
+            return false;
+        }
+      });
+    });
+
     // NoSQL - firebase realtime database way
     db.list('drivers').snapshotChanges().subscribe(actions => {
       actions.forEach(action => {
