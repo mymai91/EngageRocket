@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import {Http} from '@angular/http';
-import { AngularFireModule } from 'angularfire2';
-import { AngularFireList } from 'angularfire2/database';
-import { FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/database-deprecated';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/take';
-import { AngularFireDatabase, AngularFireAction } from 'angularfire2/database';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/switchMap';
+import { AngularFireModule } from 'angularfire2';
+import { AngularFireList } from 'angularfire2/database';
+import { FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/database-deprecated';
+import { AngularFireDatabase, AngularFireAction } from 'angularfire2/database';
 
 export class Score {
   constructor(
@@ -37,7 +37,6 @@ export class Driver {
 @Component({
   selector: 'app-drivers',
   templateUrl: './drivers.component.html',
-  styleUrls: ['./drivers.component.css']
 })
 export class DriversComponent implements OnInit {
   public driverCollections: Driver[];
@@ -46,6 +45,9 @@ export class DriversComponent implements OnInit {
   public score: Score[];
   public drivers_arr: Observable<any[]>;
   public fbDriverLocations: Observable<any[]>[] = [];
+  public error: boolean = false;
+  public fbError: boolean = false;
+
   constructor(public http: Http, public db: AngularFireDatabase) {
     this.getDriverCollections().subscribe(result => {
       this.driverCollections = result;
@@ -56,19 +58,27 @@ export class DriversComponent implements OnInit {
             return false;
         }
       });
-    });
-
-    // NoSQL - firebase realtime database way
-    db.list('drivers').snapshotChanges().subscribe(actions => {
-      actions.forEach(action => {
-        let driverName = action.payload.val().driverName;
-        this.drivers_arr= db.list('/driverLocation', ref => ref.orderByChild('driverName').equalTo(driverName)).snapshotChanges();
-        this.fbDriverLocations.push(this.drivers_arr);
-      });
+    }, error => {
+      this.error = true;
     });
   }
 
   ngOnInit() {
+    // NoSQL - firebase realtime database way
+    this.getFbDriverLocations();
+  }
+
+  // return fbDriverLocations
+  getFbDriverLocations() {
+    this.db.list('/drivers').snapshotChanges().subscribe(actions => {
+      actions.forEach(action => {
+        let driverName = action.payload.val().driverName;
+        this.drivers_arr= this.db.list('/driverLocation', ref => ref.orderByChild('driverName').equalTo(driverName)).snapshotChanges();
+        this.fbDriverLocations.push(this.drivers_arr);
+      });
+    },error => {
+      this.fbError = true;
+    });
   }
 
   // return drivers array
