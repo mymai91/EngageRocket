@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { initializeApp, database } from 'firebase';
+import { firebaseConfig } from '../environments/firebase.config';
+import { AngularFireDatabase, AngularFireAction } from 'angularfire2/database';
 
 @Component({
   selector: 'app-root',
