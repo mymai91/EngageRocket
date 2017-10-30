@@ -73,7 +73,7 @@ export class DriversComponent implements OnInit {
     this.db.list('/drivers').snapshotChanges().subscribe(actions => {
       actions.forEach(action => {
         let driverName = action.payload.val().driverName;
-        let drivers_arr= this.db.list('/driverLocation', ref => ref.orderByChild('driverName').equalTo(driverName)).snapshotChanges();
+        let drivers_arr= this.db.list('/driverLocations', ref => ref.orderByChild('driverName').equalTo(driverName)).snapshotChanges();
         this.fbDriverLocations.push(drivers_arr);
       });
     },error => {
