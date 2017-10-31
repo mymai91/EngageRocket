@@ -5,6 +5,7 @@ import { Component, Input } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import { DriversComponent } from './drivers.component';
 import { AngularFireDatabase } from 'angularfire2/database';
+import { DriverService } from '../service/driver/driver.service';
 
 const driversJson = [
   [{
@@ -75,6 +76,9 @@ describe('DriversComponent', () => {
         },
         {
           provide: AngularFireDatabase, useValue: 'db',
+        },
+        {
+          provide: DriverService, useClass: DriverService
         }
       ]
     })

@@ -12,6 +12,9 @@ import { AngularFireList } from 'angularfire2/database';
 import { FirebaseListObservable, FirebaseObjectObservable } from 'angularfire2/database-deprecated';
 import { AngularFireDatabase, AngularFireAction } from 'angularfire2/database';
 
+// import service
+import { DriverService } from '../service/driver/driver.service';
+
 export class Score {
   constructor(
     public value: number,
@@ -37,6 +40,7 @@ export class Driver {
 @Component({
   selector: 'app-drivers',
   templateUrl: './drivers.component.html',
+  providers: [ DriverService ]
 })
 export class DriversComponent implements OnInit {
   public driverCollections: Driver[];
@@ -48,8 +52,10 @@ export class DriversComponent implements OnInit {
   public error: boolean = false;
   public fbError: boolean = false;
 
-  constructor(public http: Http, public db: AngularFireDatabase) {
-    this.getDriverCollections().subscribe(result => {
+  constructor(public http: Http,
+              public db: AngularFireDatabase,
+              private driverService: DriverService) {
+    this.driverService.getDriverCollections().subscribe(result => {
       this.driverCollections = result;
       result.forEach((item, index) => {
         if (item.attribute.toLowerCase() === "location") {
@@ -88,13 +94,6 @@ export class DriversComponent implements OnInit {
       data.push(item.driver);
     });
     return data;
-  }
-
-  // return infoDrivers array
-  getDriverCollections() {
-    return this.http
-      .get('../assets/drivers.json')
-      .map(response => response.json());
   }
 
 }
